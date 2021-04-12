@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Coqui STT documentation build configuration file, created by
+# Daktilograf STT documentation build configuration file, created by
 # sphinx-quickstart on Thu Feb  2 21:20:39 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -44,9 +44,9 @@ import semver
 
 # -- Project information -----------------------------------------------------
 
-project = u'Coqui STT'
-copyright = '2021 Coqui GmbH, 2020 DeepSpeech authors, 2019-2020 Mozilla Corporation'
-author = 'Coqui GmbH'
+project = u'Daktilograf STT'
+copyright = '2021 OM3GA SOLUTIONS DOO, 2020 DeepSpeech authors, 2019-2020 Mozilla Corporation'
+author = 'OM3GA SOLUTIONS DOO'
 
 with open('../VERSION', 'r') as ver:
     v = ver.read().strip()
@@ -166,8 +166,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'STT.tex', u'Coqui STT Documentation',
-     u'Coqui GmbH', 'manual'),
+    (master_doc, 'STT.tex', u'Daktilograf STT Documentation',
+     u'OM3GA SOLUTIONS DOO', 'manual'),
 ]
 
 
@@ -176,7 +176,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'stt', u'Coqui STT Documentation',
+    (master_doc, 'stt', u'Daktilograf STT Documentation',
      [author], 1)
 ]
 
@@ -187,7 +187,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'STT', u'Coqui STT Documentation',
+    (master_doc, 'STT', u'Daktilograf STT Documentation',
      author, 'STT', 'One line description of project.',
      'Miscellaneous'),
 ]
@@ -198,5 +198,5 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
 
-extlinks = {'github': ('https://github.com/coqui-ai/STT/blob/v{}/%s'.format(release),
+extlinks = {'github': ('https://github.com/om3ga-solutions/Daktilograf/blob/v{}/%s'.format(release),
                       '%s')}
