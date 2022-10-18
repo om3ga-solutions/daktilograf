@@ -1,0 +1,23 @@
+{% extends "!page.html" %}
+{% block scripts %}
+    {{ super() }}
+    <!-- DocsQA integration start -->
+    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+
+    <qa-bot
+        token="gT0-ntzb6UlK7q_hrhJd8a2u6BBf9_Go9UkQ-rO48kxfsLay71wQ_7U="
+        title="Daktilograf STT Bot"
+        description="Trening i Razvoj speech-to-text modela."
+        style="bottom: calc(1.25em + 80px);"
+    >
+    <template>
+        <dl>
+            <dt>Možete postaviti pitanje o STT-u. Probajte</dt>
+            <dd>Šta je razvoj?</dd>
+            <dd>Kako da instaliram STT?</dd>
+            <dd>Kako da ubrzam trening?</dd>
+        </dl>
+    </template>
+    </qa-bot>
+    <!-- DocsQA integration end -->
+{% endblock %}

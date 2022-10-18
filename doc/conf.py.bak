@@ -55,7 +55,7 @@ project = "Coqui STT"
 copyright = "2021 Coqui GmbH, 2020 DeepSpeech authors, 2019-2020 Mozilla Corporation"
 author = "Coqui GmbH"
 
-with open("../training/daktilograf_stt_training/VERSION", "r") as ver:
+with open("../VERSION", "r") as ver:
     v = ver.read().strip()
 vv = semver.parse(v)
 
