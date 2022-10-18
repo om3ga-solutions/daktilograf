@@ -1,46 +1,41 @@
-Daktilograf STT
-=========
+Daktilograf STT dokumentacija glavni fajl.
 
-**Daktilograf STT** je deep-learning za trening i transkripciju glasovnih modela u tekstualne (speech-to-text).
+ Možete da prilagodite ovu datoteku u potpunosti, ali bi trebalo da sadrži direktivu `toctree` 
 
-Daktilograf STT je detaljno testiran kako za razvojnu tako i za produkcionu upotrebu 🚀
+.. image:: https://github.com/OM3GA-SOLUTIONS-d-o-o/daktilograf-V3-client/raw/main/images/dakt-stt-gh.png
+  :alt: Daktilograf STT logo and wordmark
+
+**STT** (Daktilograf STT) je komplet open source deep learning alata za trening i primenu modela transkripcije govora u tekst.
+
+Daktilograf STT je testiran i u proizvodnji i u istraživanju.
 
 
 .. toctree::
    :maxdepth: 1
    :caption: Quick Reference
 
-   DEPLOYMENT
+  RAZVOJ
 
-   TRAINING_INTRO
+ TRENING_UVOD
 
-   BUILDING
+ TRENING_NAPREDNI
 
-Brza instalacija: Instalacija
-^^^^^^^^^^^^^^^^^^^^^^
+ BILD
 
-Najbrzi nacin instalacije Daktilograf STT modela je instalacija upotrebom `pip` komande iz Python 3.5 ili novijeg paketa (*Upozorenje - samo linux podrska za sad. Radimo na uspostavljanju modula za druge operativne sisteme.*): 
+Najbrži način da koristite unapred obučeni Daktilograf STT model je pomoću Daktilograf STT modela menadžera, alata koji vam omogućava da brzo lokalno testirate demo modele. Trebaće vam Python 3.6, 3.7, 3.8 ili 3.9:
 
 .. code-block:: bash
 
-   # Kreirajte i aktivirajte virtuelno okruzenje
-   $ python3 -m venv daktilograf-stt
-   $ source daktilograf-stt/bin/activate
+   # Napravi virtuelno okruženje
+   $ python3 -m venv venv-stt
+   $ source venv-stt/bin/activate
 
-   # Instalirajte Daktilograf STT
-   $ python3 -m pip install -U pip
-   $ python3 -m pip install stt
+   # Instaliraj Daktilograf STT model menadžer
+   $ python -m pip install -U pip
+   $ python -m pip install coqui-stt-model-manager
 
-   # Preuzmite Daktilograf STT istrenirane jezicke modele (Linkovi ce vam biti dostupni logovanjem na daktilograf.me/login)
-   $ curl -LO https:...
-   $ curl -LO https:...
-
-   # Preuzmite semplove audio snimaka (Linkovi ce vam biti dostupni logovanjem na daktilograf.me/login)
-   $ curl -LO https:...
-   $ tar -xvf audio-test.tar.gz
-
-   # Transkribujte audio fajl
-   $ stt --model daktilograf-en.pbmm --scorer daktilograf-en.scorer --audio audio/2830-3980-0043.wav
+   # Pokrenite menadžer modela. Otvoriće se kartica pretraživača i tada možete preuzeti i testirati modele iz Model Zoo-a.
+   $ stt-model-manager
 
 .. toctree::
    :maxdepth: 1
@@ -60,21 +55,21 @@ Najbrzi nacin instalacije Daktilograf STT modela je instalacija upotrebom `pip` 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Examples
+   :caption: Primeri
 
-   Python-Examples
+   Python-Primeri
 
-   NodeJS-Examples
+   NodeJS-Primeri
 
-   C-Examples
+   C-Primeri
 
-   DotNet-Examples
+   DotNet-Primeri
 
-   Java-Examples
+   Java-Primeri
 
-   HotWordBoosting-Examples
+   HotWordBoosting-Primeri
 
-   Contributed-Examples
+   Contributed-Primeri
 
 .. toctree::
    :maxdepth: 1
@@ -90,7 +85,18 @@ Najbrzi nacin instalacije Daktilograf STT modela je instalacija upotrebom `pip` 
 
    playbook/README
 
-Indices and tables
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced topics
+
+   DECODER
+
+   Decoder-API
+
+   PARALLEL_OPTIMIZATION
+
+
+Indeksi i tabele
 ==================
 
 * :ref:`genindex`

@@ -1,4 +1,4 @@
-Data structures
+Strukture podataka
 ===============
 
 Metadata

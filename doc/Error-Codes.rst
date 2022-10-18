@@ -1,9 +1,9 @@
 .. _error-codes:
 
-Kodovi gresaka
+Kodovi grešaka
 ===========
 
-Ispod se nalaze definicije za svaki kod greske koji se koristi u API-u, njihova numericka vrijednost, i prevod za ljude.
+Ispod je definicija za sve kodove grešaka koji se koriste u API-ju, njihove numeričke vrednosti i čitljiv opis.
 
 .. literalinclude:: ../native_client/coqui-stt.h
    :language: c

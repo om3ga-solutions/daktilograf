@@ -1,11 +1,11 @@
 .. _js-api-example:
 
-JavaScript API Usage example
+Primer upotrebe JavaScript API-ja 
 =============================
 
-Examples are from `native_client/javascript/client.ts`.
+Primeri su sa `native_client/javascript/client.ts`.
 
-Creating a model instance and loading model
+Kreiranje instance modela i učitavanje modela
 -------------------------------------------
 
 .. literalinclude:: ../native_client/javascript/client.ts
@@ -15,8 +15,8 @@ Creating a model instance and loading model
    :start-after: sphinx-doc: js_ref_model_start
    :end-before: sphinx-doc: js_ref_model_stop
 
-Deploying trained model
------------------------
+Transkripcija zvuka sa učitanim modelom
+----------------------------------------
 
 .. literalinclude:: ../native_client/javascript/client.ts
    :language: javascript
@@ -25,7 +25,7 @@ Deploying trained model
    :start-after: sphinx-doc: js_ref_inference_start
    :end-before: sphinx-doc: js_ref_inference_stop
 
-Full source code
+Potpuni izvorni kod
 ----------------
 
-See :download:`Full source code<../native_client/javascript/client.ts>`.
+Vidi :download:`Full source code<../native_client/javascript/client.ts>`.

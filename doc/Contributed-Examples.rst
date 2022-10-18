@@ -1,4 +1,4 @@
-User contributed examples
+Primeri koje su dali korisnici
 =========================
 
-There are also several user contributed examples available on a separate examples repository: `https://github.com/coqui-ai/STT-examples <https://github.com/coqui-ai/STT-examples>`_.
+Postoji i nekoliko primera koje su dali korisnici dostupnih u posebnom repozitoriju primera: `https://github.com/coqui-ai/STT-examples <https://github.com/coqui-ai/STT-examples>`_.

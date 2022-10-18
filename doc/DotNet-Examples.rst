@@ -1,9 +1,9 @@
-.NET API Usage example
+.NET API Primer korišćenja
 ======================
 
-Examples are from `native_client/dotnet/STTConsole/Program.cs`.
+Primeri su preuzeti sa `native_client/dotnet/STTConsole/Program.cs`.
 
-Creating a model instance and loading model
+Kreiranje instance modela i učitavanje modela
 -------------------------------------------
 
 .. literalinclude:: ../native_client/dotnet/STTConsole/Program.cs
@@ -13,8 +13,8 @@ Creating a model instance and loading model
    :start-after: sphinx-doc: csharp_ref_model_start
    :end-before: sphinx-doc: csharp_ref_model_stop
 
-Deploying trained model
------------------------
+Transkripcija zvuka sa učitanim modelom
+----------------------------------------
 
 .. literalinclude:: ../native_client/dotnet/STTConsole/Program.cs
    :language: csharp
@@ -23,7 +23,7 @@ Deploying trained model
    :start-after: sphinx-doc: csharp_ref_inference_start
    :end-before: sphinx-doc: csharp_ref_inference_stop
 
-Full source code
+Pun izvorni kod
 ----------------
 
-See :download:`Full source code<../native_client/dotnet/STTConsole/Program.cs>`.
+Vidi :download:`Full source code<../native_client/dotnet/STTConsole/Program.cs>`.

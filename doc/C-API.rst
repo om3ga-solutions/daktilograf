@@ -1,4 +1,4 @@
-.. _c-usage:
+.. _c-api:
 
 C API
 =====
@@ -6,9 +6,9 @@ C API
 .. toctree::
    :maxdepth: 2
 
-   Structs
+   Daktilograf 
 
-See also the list of error codes including descriptions for each error in :ref:`error-codes`.
+Pogledajte i listu kodova grešaka uključujući opise svake greške u :ref:`error-codes`.
 
 .. doxygenfunction:: STT_CreateModel
    :project: stt-c
@@ -53,6 +53,12 @@ See also the list of error codes including descriptions for each error in :ref:`
    :project: stt-c
 
 .. doxygenfunction:: STT_IntermediateDecodeWithMetadata
+   :project: stt-c
+
+.. doxygenfunction:: STT_IntermediateDecodeFlushBuffers
+   :project: stt-c
+
+.. doxygenfunction:: STT_IntermediateDecodeWithMetadataFlushBuffers
    :project: stt-c
 
 .. doxygenfunction:: STT_FinishStream

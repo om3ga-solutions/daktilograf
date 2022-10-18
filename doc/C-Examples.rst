@@ -1,20 +1,23 @@
-C API Usage example
+C API primer korišćenja
 ===================
 
-Examples are from `native_client/client.cc`.
+Primeri su preuzeti sa `native_client/client.cc`.
 
-Creating a model instance and loading model
+Kreiranje instance modela i učitavanje modela
 -------------------------------------------
 
 .. literalinclude:: ../native_client/client.cc
    :language: c
-   :linenos:
-   :lineno-match:
-   :start-after: sphinx-doc: c_ref_model_start
-   :end-before: sphinx-doc: c_ref_model_stop
+   :start-after: sphinx-doc: c_ref_model_1_start
+   :end-before: sphinx-doc: c_ref_model_1_stop
 
-Deploying trained model
------------------------
+.. literalinclude:: ../native_client/client.cc
+   :language: c
+   :start-after: sphinx-doc: c_ref_model_2_start
+   :end-before: sphinx-doc: c_ref_model_2_stop
+
+Transkripcija zvuka sa učitanim modelom
+----------------------------------------
 
 .. literalinclude:: ../native_client/client.cc
    :language: c
@@ -23,7 +26,7 @@ Deploying trained model
    :start-after: sphinx-doc: c_ref_inference_start
    :end-before: sphinx-doc: c_ref_inference_stop
 
-Full source code
+Pun izvorni kod
 ----------------
 
-See :download:`Full source code<../native_client/client.cc>`.
+Vidi :download:`Full source code<../native_client/client.cc>`.
