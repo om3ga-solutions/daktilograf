@@ -1,4 +1,4 @@
-.. image:: images/dakt-stt-gh.png
+.. image:: https://github.com/OM3GA-SOLUTIONS-d-o-o/daktilograf-V3-client/raw/main/images/dakt-stt-gh.png
    :alt: Daktilograf STT logo
 
 
