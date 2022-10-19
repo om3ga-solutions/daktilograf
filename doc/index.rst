@@ -14,7 +14,7 @@ Daktilograf STT je testiran i u proizvodnji i u istraživanju.
    :maxdepth: 1
    :caption: Quick Reference
 
-  RAZVOJ
+ RAZVOJ
 
  TRENING_UVOD
 
@@ -30,8 +30,8 @@ Najbrži način da koristite unapred obučeni Daktilograf STT model je pomoću 
    $ python3 -m venv venv-stt
    $ source venv-stt/bin/activate
 
-   # Instaliraj Daktilograf STT model menadžer
-   $ python -m pip install -U pip
+   # Preuzmi Daktilograf STT model
+   $ curl 
    $ python -m pip install coqui-stt-model-manager
 
    # Pokrenite menadžer modela. Otvoriće se kartica pretraživača i tada možete preuzeti i testirati modele iz Model Zoo-a.
@@ -41,7 +41,7 @@ Najbrži način da koristite unapred obučeni Daktilograf STT model je pomoću 
    :maxdepth: 1
    :caption: API Reference
 
-   Error-Codes
+   Kodovi-gresaka
 
    C-API
 
