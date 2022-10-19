@@ -1,237 +1,243 @@
 .. _training-data-augmentation:
 
-Training Data Augmentation
+Trening augmentacije podataka
 ==========================
 
-This document is an overview of the augmentation techniques available for training with STT.
+Ovaj dokument je pregled tehnika povećanja količine podataka dostupnih za trening STT-a.
 
-Training data augmentations can help STT models better transcribe new speech at deployment time. The basic intuition behind data augmentation is the following: by distorting, modifying, or adding to your existing audio data, you can create a training set many times larger than what you started with. If you use a larger training data set to train as STT model, you force the model to learn more generalizable characteristics of speech, making `overfitting <https://en.wikipedia.org/wiki/Overfitting>`_ more difficult. If you can't find a larger data set of speech, you can create one with data augmentation. 
+Augmentacija data seta može pomoći STT modelima da bolje transkribuju nepoznat govor. 
+Osnovna ideja koja stoji iza augmentacije podataka je sledeća: izobličenjem, modifikovanjem ili dodavanjem postojećih audio podataka, možete kreirati data set za trening mnogo puta veći od onoga koji ste imali na početku.
+Ako koristite veći data set za trening da biste trenirali STT model, prisiljavate model da nauči karakteristike govora koje se mogu generalizovati, što otežava `prekomerno prilagođavanje. 
+Ukoliko ne možete naći veći dataset, možete ga kreirati augmentacijom.
 
-We have implemented a pre-processing pipeline with various augmentation techniques on audio data (i.e. raw ``PCM`` and spectrograms).
+Implementirali smo unapred procesuirani pipeline sa različitim tehnikama augmentacije na audio fajlovima. (t.j. raw ``PCM`` i spektrograme).
 
-Each audio file in your training data will be potentially affected by the sequence of augmentations you specify. Whether or not an augmentation will *actually* get applied to a given audio file is determined by the augmentation's probability value. For example, a probability value of ``p=0.1`` means the according augmentation has a 10% chance of being applied to a given audio file. This also means that augmentations are not mutually exclusive on a per-audio-file basis.
+Augmentacija koju odredite će potencijalno imati uticaj na svaki fajl u vašem dta setu. 
+Da li će augmentacija zapravo biti primenjena na svaki audio fajl zavisi od njene vrednosti povećanja verovatnoće. 
+Naprimer, vrednost verovatnoće od``p=0.1`` znači da postoji 10% šanse da se augmentacija primeni na dati audio fajl. 
+Ovo takođe znači da se augmentacije ne isključuju međusobno na datom fajlu. 
 
-The ``--augment`` flag uses a common syntax for all augmentation types:
+Oznaka``--augment`` koristi zajedničku sintaksu za sve tipove povećanja:
 
 .. code-block::
 
-  --augment augmentation_type1[param1=value1,param2=value2,...] --augment augmentation_type2[param1=value1,param2=value2,...] ...
+  --augment "augmentation_type1[param1=value1,param2=value2,...]" "augmentation_type2[param1=value1,param2=value2,...]" ...
 
-For example, for the ``overlay`` augmentation:
+Na rimer, za ``overlay`` augmentaciju:
 
 .. code-block::
 
-  python3 train.py --augment overlay[p=0.1,source=/path/to/audio.sdb,snr=20.0] ...
+  python -m coqui_stt_training.train --augment "overlay[p=0.1,source=/path/to/audio.sdb,snr=20.0]" ...
 
-In the documentation below, whenever a value is specified as ``<float-range>`` or ``<int-range>``, it supports one of the follow formats:
+U dokumentaciji ispod, kad god je vrednost navedena kao ``<float-range>`` ili ``<int-range>``, podržava jedan od sledećih formata:
 
-  * ``<value>``: A constant (int or float) value.
+  * ``<value>``: Konstantna (int or float) vrednost
 
-  * ``<value>~<r>``: A center value with a randomization radius around it. E.g. ``1.2~0.4`` will result in picking of a uniformly random value between 0.8 and 1.6 on each sample augmentation.
+  * ``<value>~<r>``: Centralna vrednost sa radijusom randomizacije oko nje. Na primer.. ``1.2~0.4`` će rezultirati odabirom ujednačeno nasumične vrednosti između 0.8 and 1.6 na svakom povećanju augmentacije.
 
-  * ``<start>:<end>``: The value will range from `<start>` at the beginning of the training to `<end>` at the end of the training. E.g. ``-0.2:1.2`` (float) or ``2000:4000`` (int)
+  * ``<start>:<end>``: Vrednost će se kretati od `<start>`na početku treninga do `<end>` na kraju treninga. Na primer ``-0.2:1.2`` (float) ili ``2000:4000`` (int)
 
-  * ``<start>:<end>~<r>``: Combination of the two previous cases with a ranging center value. E.g. ``4-6~2`` would at the beginning of the training pick values between 2 and 6 and at the end of the training between 4 and 8.
+  * ``<start>:<end>~<r>``: Kombinacija prethodna dva slučaja sa centralnom vrednošću raspona. Na primer ``4-6~2`` bi na početku treninga biralo vrednosti između 2 i 6 a na kraju treninga između 4 i 8.
 
-Ranges specified with integer limits will only assume integer (rounded) values.
-
+Opsezi navedeni sa ograničenjima celog broja pretpostavljaju samo celobrojne (zaokružene) vrednosti.
 .. warning::
-    When feature caching is enabled, by default the cache has no expiration limit and will be used for the entire training run. This will cause these augmentations to only be performed once during the first epoch and the result will be reused for subsequent epochs. This would not only hinder value ranges from reaching their intended final values, but could also lead to unintended over-fitting. In this case flag ``--cache_for_epochs N`` (with N > 1) should be used to periodically invalidate the cache after every N epochs and thus allow samples to be re-augmented in new ways and with current range-values.
+    Kada je keširanje funkcija omogućeno, keš po podrazumevanoj vrednosti nema ograničenje roka trajanja i koristiće se za ceo trening proces.
+	Ovo će dovesti do toga da se ove augmentacije vrše samo jednom tokom prve epohe, a rezultat će se ponovo koristiti za sledeće epohe.
+	Ovo ne samo da bi omelo opsege vrednosti od dostizanja predviđenih konačnih vrednosti, već bi takođe moglo dovesti do nenamernog overfittinga.
+	U ovom slučaju, oznaku``--cache_for_epochs N`` (with N > 1) treba koristiti za periodično poništavanje keša nakon svakih N epoha i na taj način omogućiti da se uzorci ponovo augmentuju na nove načine i sa trenutnim vrednostima opsega.
 
-Every augmentation targets a certain representation of the sample - in this documentation these representations are referred to as *domains*.
-Augmentations are applied in the following order:
+Svaka augmentacija targetira određenu reprezentaciju uzorka - u ovoj dokumentaciji te se reprezentacije nazivaju *domeni*.
+Augmentacije se primenjuju sledećim redosledom:
 
-1. **sample** domain: The sample just got loaded and its waveform is represented as a NumPy array. For implementation reasons these augmentations are the only ones that can be "simulated" through ``bin/play.py``.
+1. **sample** domen: Uzorak je upravo učitan i njegov talasni oblik je predstavljen kao NumPy niz. Zbog implementacije, ove augmentacije su jedine koje se mogu "simulirati" preko``bin/play.py``.
 
-2. **signal** domain: The sample waveform is represented as a tensor.
+2. **signal** domen: Talasni oblik uzorka je predstavljen kao tenzor.
 
-3. **spectrogram** domain: The sample spectrogram is represented as a tensor.
+3. **spectrogram** domen: Spektrogram uzorka je predstavljen kao tenzor.
 
-4. **features** domain: The sample's mel spectrogram features are represented as a tensor.
+4. **features** domen: Karakteristike mel spektrograma uzorka su predstavljene kao tenzor.
 
-Within a single domain, augmentations are applied in the same order as they appear in the command-line.
+U okviru jednog domena, proširenja se primenjuju istim redosledom kako se pojavljuju u komandnoj liniji.
 
 
-Sample domain augmentations
+Primer augmentacije domena
 ---------------------------
 
-**Overlay augmentation** ``--augment overlay[p=<float>,source=<str>,snr=<float-range>,layers=<int-range>]``
-  Layers another audio source (multiple times) onto augmented samples.
+**Overlay augmentation** ``"overlay[p=<float>,source=<str>,snr=<float-range>,layers=<int-range>]"``
+  Dodaje se sloj drugog audio fajla na već augmentirane uzorke. 
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost verovatnoće je 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentira ovom metodom.
 
-  * **source**: path to the sample collection to use for augmenting (\*.sdb or \*.csv file). It will be repeated if there are not enough samples left.
+  * **source**: putanja za kolekciju uzoraka kojom se vrši augmentacija (\*.sdb or \*.csv file). Ponoviće se ako nema dovoljno uzoraka.
 
-  * **snr**: signal to noise ratio in dB - positive values for lowering volume of the overlay in relation to the sample
+  * **snr**: odnos signal/šum u dB - pozitivne vrednosti za smanjenje jačine preklapanja u odnosu na uzorak
 
-  * **layers**: number of layers added onto the sample (e.g. 10 layers of speech to get "cocktail-party effect"). A layer is just a sample of the same duration as the sample to augment. It gets stitched together from as many source samples as required.
+  * **layers**: broj slojeva koji su dodati uzorku (npr. 10 slojeva govora da bi se dobio „efekat koktela“). Sloj je samo uzorak istog trajanja kao i uzorak za povećanje. Sastavlja se iz onoliko izvornih uzoraka koliko je potrebno.
+
+**Reverb augmentation** ``"reverb[p=<float>,delay=<float-range>,decay=<float-range>]"``
+  Dodaje pojednostavljene(no all-pass filters) `Schroeder reverberation <https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html>`_za augmentovane uzorke.
+
+  * **p**: vrednost verovatnoće 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovom metodom
+
+  * **delay**: vremensko kašnjenje u milisekundama za prvu refleksiju signala -e veće vrednosti proširuju "sobu".
+ 
+  * **decay**: opadanje zvuka u dB po refleksiji - veće vrednosti će rezultirati sa manje povratnog signala
 
 
-**Reverb augmentation** ``--augment reverb[p=<float>,delay=<float-range>,decay=<float-range>]``
-  Adds simplified (no all-pass filters) `Schroeder reverberation <https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html>`_ to the augmented samples.
+**Resample augmentation** ``"resample[p=<float>,rate=<int-range>]"``
+  Resample-uje augmentovane uzorke na rugi sample rate, a yatim ga vra'a na originalni sample rate. 
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
-
-  * **delay**: time delay in ms for the first signal reflection - higher values are widening the perceived "room"
-
-  * **decay**: sound decay in dB per reflection - higher values will result in a less reflective perceived "room"
-
-
-**Resample augmentation** ``--augment resample[p=<float>,rate=<int-range>]``
-  Resamples augmented samples to another sample rate and then resamples back to the original sample rate.
-
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost verovatnoće 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
   * **rate**: sample-rate to re-sample to
 
 
-**Codec augmentation** ``--augment codec[p=<float>,bitrate=<int-range>]``
-  Compresses and then decompresses augmented samples using the lossy Opus audio codec.
+**Codec augmentation** ``"codec[p=<float>,bitrate=<int-range>]"``
+  Kompersuje, zatim dekompresuje augmentovane uzorke koriteći lossy Opus audio kodek.
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost verovatnoće između 0.0 (nikad) i  1.0 (uvek)  ako se dati uzorak augmentuje ovim metodom.
 
-  * **bitrate**: bitrate used during compression
+  * **bitrate**: bitrate korišćen tokom kompresovanja.
 
 
-**Volume augmentation** ``--augment volume[p=<float>,dbfs=<float-range>]``
-  Measures and levels augmented samples to a target dBFS value.
+**Volume augmentation** ``"volume[p=<float>,dbfs=<float-range>]"``
+  Meri date uzorke da bi odredili dBFS vrednost.
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
-  * **dbfs** : target volume in dBFS (default value of 3.0103 will normalize min and max amplitudes to -1.0/1.0)
+  * **dbfs** : ciljna jačina u dBFS (default vrednost od 3.0103 će normalizovati minimalne i maksimalne amplitude u rasponu od -1.0/1.0)
 
-Spectrogram domain augmentations
+Augmentacija spektrogram domena
 --------------------------------
 
-**Pitch augmentation** ``--augment pitch[p=<float>,pitch=<float-range>]``
-  Scales spectrogram on frequency axis and thus changes pitch.
+**Pitch augmentation** ``"pitch[p=<float>,pitch=<float-range>]"``
+  Skalira spektrogram na osi frekvencije i tako menja visinu.
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
-  * **pitch**: pitch factor by with the frequency axis is scaled (e.g. a value of 2.0 will raise audio frequency by one octave)
-
-
-**Tempo augmentation** ``--augment tempo[p=<float>,factor=<float-range>]``
-  Scales spectrogram on time axis and thus changes playback tempo.
-
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
-
-  * **factor**: speed factor by which the time axis is stretched or shrunken (e.g. a value of 2.0 will double playback tempo)
+  * **pitch**: Faktor visine tona sa frekvencijskom osom je skaliran (npr. vrednost od 2,0 će povećati audio frekvenciju za jednu oktavu)
 
 
-**Warp augmentation** ``--augment warp[p=<float>,nt=<int-range>,nf=<int-range>,wt=<float-range>,wf=<float-range>]``
-  Applies a non-linear image warp to the spectrogram. This is achieved by randomly shifting a grid of equally distributed warp points along time and frequency axis.
+**Tempo augmentation** ``"tempo[p=<float>,factor=<float-range>]"``
+ Skalira spektrogram na vremenskoj osi i tako menja tempo reprodukcije.
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
-  * **nt**: number of equally distributed warp grid lines along time axis of the spectrogram (excluding the edges)
-
-  * **nf**: number of equally distributed warp grid lines along frequency axis of the spectrogram (excluding the edges)
-
-  * **wt**: standard deviation of the random shift applied to warp points along time axis (0.0 = no warp, 1.0 = half the distance to the neighbour point)
-
-  * **wf**: standard deviation of the random shift applied to warp points along frequency axis (0.0 = no warp, 1.0 = half the distance to the neighbour point)
+  
+  * **factor**: faktor brzine za koji se vremenska osa rasteže ili skuplja (npr. vrednost od 2,0 će udvostručiti tempo reprodukcije)
 
 
-**Frequency mask augmentation** ``--augment frequency_mask[p=<float>,n=<int-range>,size=<int-range>]``
-  Sets frequency-intervals within the augmented samples to zero (silence) at random frequencies. See the SpecAugment paper for more details - https://arxiv.org/abs/1904.08779
+**Warp augmentation** ``"warp[p=<float>,nt=<int-range>,nf=<int-range>,wt=<float-range>,wf=<float-range>]"``
+  Primenjuje nelinearnu deformaciju slike na spektrogram. Ovo se postiže nasumičnim pomeranjem mreže jednako raspoređenih tačaka osnove duž vremenske i frekvencijske ose.
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**:vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
-  * **n**: number of intervals to mask
+  * **nt**: broj jednako raspoređenih linija osnove mreže duž vremenske ose spektrograma (isključujući ivice)
 
-  * **size**: number of frequency bands to mask per interval
+  * **nf**: broj jednako raspoređenih linija iskrivljene mreže duž ose frekvencije spektrograma (isključujući ivice)
 
-Multi domain augmentations
+  * **wt**: standardna devijacija nasumičnog pomeranja primenjenog na tačke osnove duž vremenske ose (0.0 = no warp, 1.0 = half the distance to the neighbour point)
+
+  * **wf**: standardna devijacija nasumičnog pomeranja primenjenog na tačke osnove duž ose frekvencije (0.0 = no warp, 1.0 = half the distance to the neighbour point)
+
+
+**Frequency mask augmentation** ``"frequency_mask[p=<float>,n=<int-range>,size=<int-range>]"``
+  Postavlja frekvencijske intervale unutar proširenih uzoraka na nulu (tišina) na nasumičnim frekvencijama. Pogledajte SpecAugment dokument za više detalja- https://arxiv.org/abs/1904.08779
+
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
+
+  * **n**: broj intervala za maskiranje
+
+  * **size**: broj frekventnih opsega za maskiranje po intervalu
+
+Više domenska augmentacija
 --------------------------
 
-**Time mask augmentation** ``--augment time_mask[p=<float>,n=<int-range>,size=<float-range>,domain=<domain>]``
-  Sets time-intervals within the augmented samples to zero (silence) at random positions.
+**Time mask augmentation** ``"time_mask[p=<float>,n=<int-range>,size=<float-range>,domain=<domain>]"``
+  Postavlja vremenske intervale unutar proširenih uzoraka na nulu (tišina) na nasumičnim pozicijama
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
-  * **n**: number of intervals to set to zero
+  * **n**: broj intervala je podešen na nulu
 
-  * **size**: duration of intervals in ms
+  * **size**: dužina intervala u milisekundama
 
-  * **domain**: data representation to apply augmentation to - "signal", "features" or "spectrogram" (default)
-
-
-**Dropout augmentation** ``--augment dropout[p=<float>,rate=<float-range>,domain=<domain>]``
-  Zeros random data points of the targeted data representation.
-
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
-
-  * **rate**: dropout rate ranging from 0.0 for no dropout to 1.0 for 100% dropout
-
-  * **domain**: data representation to apply augmentation to - "signal", "features" or "spectrogram" (default)
+  * **domain**: predstavljanje podataka za primenu augmentacije - "signal", "features" ili "spectrogram" (default)
 
 
-**Add augmentation** ``--augment add[p=<float>,stddev=<float-range>,domain=<domain>]``
-  Adds random values picked from a normal distribution (with a mean of 0.0) to all data points of the targeted data representation.
+**Dropout augmentation** ``"dropout[p=<float>,rate=<float-range>,domain=<domain>]"``
+  Nule slučajne tačke podataka ciljanog prikaza podataka.
 
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
 
-  * **stddev**: standard deviation of the normal distribution to pick values from
+  * **rate**: stopa dropout-a u opsegu od 0.0 do 1.0 za 100% dropout-a
 
-  * **domain**: data representation to apply augmentation to - "signal", "features" (default) or "spectrogram"
-
-
-**Multiply augmentation** ``--augment multiply[p=<float>,stddev=<float-range>,domain=<domain>]``
-  Multiplies all data points of the targeted data representation with random values picked from a normal distribution (with a mean of 1.0).
-
-  * **p**: probability value between 0.0 (never) and 1.0 (always) if a given sample gets augmented by this method
-
-  * **stddev**: standard deviation of the normal distribution to pick values from
-
-  * **domain**: data representation to apply augmentation to - "signal", "features" (default) or "spectrogram"
+  * **domain**: predstavljanje podataka za primenu augmentacije - "signal", "features" ili "spectrogram" (default)
 
 
-Example training with all augmentations:
+**Add augmentation** ``"add[p=<float>,stddev=<float-range>,domain=<domain>]"``
+ Dodaje nasumične vrednosti izabrane iz normalne distribucije (sa srednjom vrednošću 0,0) svim tačkama podataka ciljanog prikaza podataka.
+
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
+
+  * **stddev**:standardna devijacija normalne distribucije za odabir vrednosti
+
+  * **domain**: predstavljanje podataka za primenu augmentacije  - "signal", "features" (default) ili "spectrogram"
+
+
+**Multiply augmentation** ``"multiply[p=<float>,stddev=<float-range>,domain=<domain>]"``
+  Množi sve tačke podataka ciljane reprezentacije podataka sa slučajnim vrednostima izabranim iz normalne distribucije (sa srednjom vrednošću 1,0).
+
+  * **p**: vrednost između 0.0 (nikad) i 1.0 (uvek) ako se dati uzorak augmentuje ovim metodom.
+
+  * **stddev**: standardna devijacija normalne distribucije za odabir vrednosti
+
+  * **domain**: predstavljanje podataka za primenu augmentacije  - "signal", "features" (default) ili "spectrogram"
+  
+
+Primer treninga sa primenom svih augmentacija
 
 .. code-block:: bash
 
-        python -u train.py \
+        python -m coqui_stt_training.train \
           --train_files "train.sdb" \
-          --feature_cache ./feature.cache \
-          --cache_for_epochs 10 \
           --epochs 100 \
-          --augment overlay[p=0.5,source=noise.sdb,layers=1,snr=50:20~10] \
-          --augment reverb[p=0.1,delay=50.0~30.0,decay=10.0:2.0~1.0] \
-          --augment resample[p=0.1,rate=12000:8000~4000] \
-          --augment codec[p=0.1,bitrate=48000:16000] \
-          --augment volume[p=0.1,dbfs=-10:-40] \
-          --augment pitch[p=0.1,pitch=1~0.2] \
-          --augment tempo[p=0.1,factor=1~0.5] \
-          --augment warp[p=0.1,nt=4,nf=1,wt=0.5:1.0,wf=0.1:0.2] \
-          --augment frequency_mask[p=0.1,n=1:3,size=1:5] \
-          --augment time_mask[p=0.1,domain=signal,n=3:10~2,size=50:100~40] \
-          --augment dropout[p=0.1,rate=0.05] \
-          --augment add[p=0.1,domain=signal,stddev=0~0.5] \
-          --augment multiply[p=0.1,domain=features,stddev=0~0.5] \
+          --augment \
+              "overlay[p=0.5,source=noise.sdb,layers=1,snr=50:20~10]" \
+              "reverb[p=0.1,delay=50.0~30.0,decay=10.0:2.0~1.0]" \
+              "resample[p=0.1,rate=12000:8000~4000]" \
+              "codec[p=0.1,bitrate=48000:16000]" \
+              "volume[p=0.1,dbfs=-10:-40]" \
+              "pitch[p=0.1,pitch=1~0.2]" \
+              "tempo[p=0.1,factor=1~0.5]" \
+              "warp[p=0.1,nt=4,nf=1,wt=0.5:1.0,wf=0.1:0.2]" \
+              "frequency_mask[p=0.1,n=1:3,size=1:5]" \
+              "time_mask[p=0.1,domain=signal,n=3:10~2,size=50:100~40]" \
+              "dropout[p=0.1,rate=0.05]" \
+              "add[p=0.1,domain=signal,stddev=0~0.5]" \
+              "multiply[p=0.1,domain=features,stddev=0~0.5]" \
           [...]
 
 
-The ``bin/play.py`` and ``bin/data_set_tool.py`` tools also support ``--augment`` parameters (for sample domain augmentations) and can be used for experimenting with different configurations or creating augmented data sets.
-
-Example of playing all samples with reverberation and maximized volume:
-
-.. code-block:: bash
-
-        bin/play.py --augment reverb[p=0.1,delay=50.0,decay=2.0] --augment volume --random test.sdb
-
-Example simulation of the codec augmentation of a wav-file first at the beginning and then at the end of an epoch:
+The ``bin/play.py`` and ``bin/data_set_tool.py`` alati takođe podržavaju ``--augment`` parametre (za uzorke domenskih augmentacija) i može se koristiti za eksperimentisanje sa različitim konfiguracijama ili kreiranje proširenih data setova.
+Primer svih semplova sa reverberacijom i maksimalnom jačinom zvuka:
 
 .. code-block:: bash
 
-        bin/play.py --augment codec[p=0.1,bitrate=48000:16000] --clock 0.0 test.wav
-        bin/play.py --augment codec[p=0.1,bitrate=48000:16000] --clock 1.0 test.wav
+        bin/play.py --augment "reverb[p=0.1,delay=50.0,decay=2.0]" --augment volume --random true --source test.sdb
 
-Example of creating a pre-augmented test set:
+Primer simulacije augmentacije kodeka.wav datoteke na početku i na kraju epohe: 
+
+.. code-block:: bash
+
+        bin/play.py --augment "codec[p=0.1,bitrate=48000:16000]" --clock 0.0 --source test.wav
+        bin/play.py --augment "codec[p=0.1,bitrate=48000:16000]" --clock 1.0 --source test.wav
+
+Primer kreiranja test seta pre augmentacije:
 
 .. code-block:: bash
 
         bin/data_set_tool.py \
-          --augment overlay[source=noise.sdb,layers=1,snr=20~10] \
-          --augment resample[rate=12000:8000~4000] \
-          test.sdb test-augmented.sdb
+          --augment "overlay[source=noise.sdb,layers=1,snr=20~10]" \
+          --augment "resample[rate=12000:8000~4000]" \
+          --sources test.sdb --target test-augmented.sdb
